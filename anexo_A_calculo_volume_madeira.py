@@ -54,6 +54,9 @@ def print_summary(result):
     print(f"Número total de árvores: {result['Num_arvores'].sum()}")
     print(f"Volume médio por hectare (m³/ha): {result['Volume_m3_ha'].mean():.2f}")
     print(f"Densidade média de árvores por hectare: {result['Arvores_ha'].mean():.2f}")
+    total_subparcels = result[['UA', 'Subunidade', 'Subparcela']].drop_duplicates().shape[0]
+    area_total_ha = total_subparcels * 0.025
+    print(f"Área total estimada (ha): {area_total_ha:.2f}")
 
 # Carregar e processar dados
 file_path = "dadosabertos_snif_dap_10_por_uf_ac_2024_sfb_29052025.csv"
