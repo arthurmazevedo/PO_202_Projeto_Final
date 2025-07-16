@@ -85,8 +85,8 @@ def calculate_tree_volume(dap, ht):
     return volume
 
 # Carregar o arquivo CSV
-file_path = "dadosabertos_snif_dap_10_por_uf_ac_2024_sfb_29052025.csv"
-df = pd.read_csv(file_path, encoding='utf-8')
+file_path = "./dadosabertos_snif_dap_10_por_uf_ac_2024_sfb_29052025.csv"
+df = pd.read_csv(file_path, encoding='utf-8', sep=';')
 
 # Filtrar árvores vivas (excluir "morto" e MB = "S")
 df = df[(df['Especie_campo'] != 'morto') & (df['MB'] != 'S')]
