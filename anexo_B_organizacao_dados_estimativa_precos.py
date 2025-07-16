@@ -134,11 +134,11 @@ total_trees_por_up.rename(columns={'Numero de Arvores': 'Numero Total de Arvores
 total_por_up = pd.merge(total_por_up, total_trees_por_up, on='Unidade de Producao')
 
 # Exportar o boletim completo para CSV
-bulletin.to_csv('wood_volume_value_bulletin_acre.csv', index=False, encoding='utf-8')
+bulletin.to_csv('boletim_madeira_acre_com_precos.csv', index=False, encoding='utf-8')
 
 # Exportar a nova tabela com os totais por UP para um CSV separado
-total_por_up.to_csv('total_value_per_up_acre.csv', index=False, encoding='utf-8')
+total_por_up.to_csv('valor_total_por_up_acre.csv', index=False, encoding='utf-8')
 
 # Exibir mensagem de confirmacao e resultados
-print("Boletim completo gerado e exportado para 'wood_volume_value_bulletin_acre.csv'")
-print("Nova tabela com valor total e numero de arvores por UP exportada para 'total_value_per_up_acre.csv'")
+print("Boletim completo gerado e exportado para 'boletim_madeira_acre_com_precos.csv'")
+print("Nova tabela com valor total e numero de arvores por UP exportada para 'valor_total_por_up_acre.csv'")
