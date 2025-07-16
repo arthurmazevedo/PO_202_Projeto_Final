@@ -1,11 +1,11 @@
 import pandas as pd
 
-# Definindo coeficientes da equacao de Schumacher-Hall
+# Definindo coeficientes da equação de Schumacher-Hall
 a = 0.000057  # Coeficiente 'a'
 b = 2.0       # Exponente para DAP
 c = 0.84      # Exponente para HT
 
-# Dicionario de precos por especie em R$/m3 (baseado em IBGE PEVS 2023)
+# Dicionário de preços por espécie em R$/m³ (baseado em IBGE PEVS 2023)
 precos_por_especie = {
     'abacaba': 600.00,
     'abiorana branca': 650.00,
@@ -14,7 +14,7 @@ precos_por_especie = {
     'angelca amarela': 700.00,
     'apui amarelo': 750.00,
     'apui miudo': 750.00,
-    'araca bravo': 600.00,
+    'araça bravo': 600.00,
     'bordao de velho': 650.00,
     'breu mescla': 700.00,
     'burra leiteira': 650.00,
@@ -27,7 +27,7 @@ precos_por_especie = {
     'caripe vermelho': 700.00,
     'castainha': 650.00,
     'cipo farinha seca': 600.00,
-    'coacu': 650.00,
+    'coaçu': 650.00,
     'copaiba amarela': 800.00,
     'envira iodo branca': 650.00,
     'envira piaca': 650.00,
@@ -77,7 +77,7 @@ precos_por_especie = {
     'xixa amarelo': 700.00
 }
 
-# Funcao para calcular o volume de uma arvore (em m3)
+# Função para calcular o volume de uma árvore (em m³)
 def calculate_tree_volume(dap, ht):
     if pd.isna(dap) or pd.isna(ht) or dap <= 0 or ht <= 0:
         return 0.0
@@ -88,38 +88,38 @@ def calculate_tree_volume(dap, ht):
 file_path = "./dadosabertos_snif_dap_10_por_uf_ac_2024_sfb_29052025.csv"
 df = pd.read_csv(file_path, encoding='utf-8', sep=';')
 
-# Filtrar arvores vivas (excluir "morto" e MB = "S")
+# Filtrar árvores vivas (excluir "morto" e MB = "S")
 df = df[(df['Especie_campo'] != 'morto') & (df['MB'] != 'S')]
 
-# Calcular o volume para cada arvore
+# Calcular o volume para cada árvore
 df['Volume_m3'] = df.apply(lambda row: calculate_tree_volume(row['DAP'], row['HT']), axis=1)
 
-# Agrupar por UA (UP), Subunidade, Subparcela e Especie_campo para calcular volume total e numero de arvores
+# Agrupar por UA (UP), Subunidade, Subparcela e Especie_campo para calcular volume total e número de árvores
 grouped_volume = df.groupby(['UA', 'Subunidade', 'Subparcela', 'Especie_campo'])['Volume_m3'].sum().reset_index()
-grouped_trees = df.groupby(['UA', 'Subunidade', 'Subparcela', 'Especie_campo']).size().reset_index(name='Numero de Arvores')
+grouped_trees = df.groupby(['UA', 'Subunidade', 'Subparcela', 'Especie_campo']).size().reset_index(name='Número de Árvores')
 
 # Mesclar os grupos
 bulletin = pd.merge(grouped_volume, grouped_trees, on=['UA', 'Subunidade', 'Subparcela', 'Especie_campo'])
 
 # Renomear colunas para o boletim
-bulletin.rename(columns={'UA': 'Unidade de Producao', 'Especie_campo': 'Especie', 'Volume_m3': 'Volume Total (m3)'}, inplace=True)
+bulletin.rename(columns={'UA': 'Unidade de Produção', 'Especie_campo': 'Espécie', 'Volume_m3': 'Volume Total (m³)'}, inplace=True)
 
-# Adicionar preco por especie (usando o dicionario; preco padrao 600.00 se nao encontrado)
-bulletin['Preco (R$/m3)'] = bulletin['Especie'].map(precos_por_especie).fillna(600.00)
+# Adicionar preço por espécie (usando o dicionário; preço padrão 600.00 se não encontrado)
+bulletin['Preço (R$/m³)'] = bulletin['Espécie'].map(precos_por_especie).fillna(600.00)
 
-# Calcular o valor estimado por especie em cada UP
-bulletin['Valor Estimado (R$)'] = bulletin['Volume Total (m3)'] * bulletin['Preco (R$/m3)']
+# Calcular o valor estimado por espécie em cada UP
+bulletin['Valor Estimado (R$)'] = bulletin['Volume Total (m³)'] * bulletin['Preço (R$/m³)']
 
-# Calcular o valor total por UP (somando os valores das especies)
-total_por_up = bulletin.groupby('Unidade de Producao')['Valor Estimado (R$)'].sum().reset_index()
+# Calcular o valor total por UP (somando os valores das espécies)
+total_por_up = bulletin.groupby('Unidade de Produção')['Valor Estimado (R$)'].sum().reset_index()
 total_por_up.rename(columns={'Valor Estimado (R$)': 'Valor Total por UP (R$)'}, inplace=True)
 
-# Calcular o numero total de arvores por UP
-total_trees_por_up = bulletin.groupby('Unidade de Producao')['Numero de Arvores'].sum().reset_index()
-total_trees_por_up.rename(columns={'Numero de Arvores': 'Numero Total de Arvores'}, inplace=True)
+# Calcular o número total de árvores por UP
+total_trees_por_up = bulletin.groupby('Unidade de Produção')['Número de Árvores'].sum().reset_index()
+total_trees_por_up.rename(columns={'Número de Árvores': 'Número Total de Árvores'}, inplace=True)
 
-# Mesclar o numero total de arvores na tabela de totais por UP
-total_por_up = pd.merge(total_por_up, total_trees_por_up, on='Unidade de Producao')
+# Mesclar o número total de árvores na tabela de totais por UP
+total_por_up = pd.merge(total_por_up, total_trees_por_up, on='Unidade de Produção')
 
 # Exportar o boletim completo para CSV
 bulletin.to_csv('boletim_madeira_acre_com_precos.csv', index=False)
@@ -128,6 +128,6 @@ bulletin.to_csv('boletim_madeira_acre_com_precos.csv', index=False)
 total_por_up.to_csv('valor_total_por_up_acre.csv', index=False)
 
 print("Boletim completo gerado e exportado para 'wood_volume_value_bulletin_acre.csv'")
-print("Nova tabela com valor total e numero de arvores por UP exportada para 'total_value_per_up_acre.csv'")
-print("\nConteudo da nova tabela (Valor Total e Numero de Arvores por UP):")
+print("Nova tabela com valor total e número de árvores por UP exportada para 'total_value_per_up_acre.csv'")
+print("\nConteúdo da nova tabela (Valor Total e Número de Árvores por UP):")
 print(total_por_up)
